@@ -3,28 +3,6 @@ var snake = {
   length: 1,
   bodyParts: [[297, 297], [290, 297], [283, 297], [276, 297], [269, 297]],
   direction: 'right',
-  move: {
-    up: function(){
-      snake.bodyParts.unshift(snake.bodyParts[0].slice());
-      snake.bodyParts[0] = [snake.bodyParts[0][0], snake.bodyParts[0][1] - 7];
-      snake.bodyParts.pop(snake.bodyParts[snake.bodyParts.length - 1]);
-    },
-    right: function(){
-      snake.bodyParts.unshift(snake.bodyParts[0].slice());
-      snake.bodyParts[0] = [snake.bodyParts[0][0] + 7, snake.bodyParts[0][1]];
-      snake.bodyParts.pop(snake.bodyParts[snake.bodyParts.length - 1]);
-    },
-    down: function(){
-      snake.bodyParts.unshift(snake.bodyParts[0].slice());
-      snake.bodyParts[0] = [snake.bodyParts[0][0], snake.bodyParts[0][1] + 7];
-      snake.bodyParts.pop(snake.bodyParts[snake.bodyParts.length - 1]);
-    },
-    left: function(){
-      snake.bodyParts.unshift(snake.bodyParts[0].slice());
-      snake.bodyParts[0] = [snake.bodyParts[0][0] - 7, snake.bodyParts[0][1]];
-      snake.bodyParts.pop(snake.bodyParts[snake.bodyParts.length - 1]);
-    }
-  },
   render: function(){
     this.bodyParts.forEach(function(coord){
       var x = coord[0];
@@ -32,6 +10,28 @@ var snake = {
       gameArea.ctx.fillStyle = 'rgb(0, 180, 0)';
       gameArea.ctx.fillRect(x, y, 6, 6);
     });
+  },
+  move: function(){
+    if(this.direction === 'right'){
+      this.bodyParts.unshift(this.bodyParts[0].slice());
+      this.bodyParts[0] = [this.bodyParts[0][0] + 7, this.bodyParts[0][1]];
+      this.bodyParts.pop(this.bodyParts[this.bodyParts.length - 1]);
+
+    } else if(this.direction === 'left'){
+      this.bodyParts.unshift(this.bodyParts[0].slice());
+      this.bodyParts[0] = [this.bodyParts[0][0] - 7, this.bodyParts[0][1]];
+      this.bodyParts.pop(this.bodyParts[this.bodyParts.length - 1]);
+
+    } else if(this.direction === 'up'){
+      this.bodyParts.unshift(this.bodyParts[0].slice());
+      this.bodyParts[0] = [this.bodyParts[0][0], this.bodyParts[0][1] - 7];
+      this.bodyParts.pop(this.bodyParts[this.bodyParts.length - 1]);
+
+    } else if(this.direction === 'down'){
+      this.bodyParts.unshift(this.bodyParts[0].slice());
+      this.bodyParts[0] = [this.bodyParts[0][0], this.bodyParts[0][1] + 7];
+      this.bodyParts.pop(this.bodyParts[this.bodyParts.length - 1]);
+    }
   }
 };
 
@@ -54,11 +54,11 @@ var gameArea = {
 
 function updateGameArea(){
   gameArea.clear();
-  snake.move.down();
+  snake.move();
   snake.render();
 
   // temporary interval limit
-  if(snake.bodyParts[0][1] > 600){
+  if(snake.bodyParts[0][0] > 600){
     clearInterval(gameArea.interval);
   }
 }
