@@ -10,7 +10,7 @@ function updateGameArea(){
   gameArea.clear();
   snake.changeDirection(snake.keyboardEvent);
   snake.move();
-  snake.render();
+  snake.render('green', 'rgb(0, 180, 0)');
   snake.detectCollision();
 }
 
@@ -29,16 +29,16 @@ var gameArea = {
 
 var snake = {
   head: [1, 1],
-  bodyParts: [],
+  bodyParts: [[1, 8], [1, 15], [1, 22], [1, 29], [1, 36]],
   direction: 'right',
   keyboardEvent: {code: 'ArrowRight'},
-  render: function(){
-    gameArea.ctx.fillStyle = 'rgb(0, 180, 0)';
+  render: function(headColor, bodyColor){
+    gameArea.ctx.fillStyle = headColor;
     gameArea.ctx.fillRect(snake.head[0], snake.head[1], 6, 6);
     snake.bodyParts.forEach(function(coord){
       var x = coord[0];
       var y = coord[1];
-      gameArea.ctx.fillStyle = 'rgb(0, 180, 0)';
+      gameArea.ctx.fillStyle = bodyColor;
       gameArea.ctx.fillRect(x, y, 6, 6);
     });
   },
@@ -58,11 +58,13 @@ var snake = {
     snake.bodyParts.forEach(function(bodyPart){
       if(snake.head.toString() === bodyPart.toString()){
         clearInterval(gameArea.interval);
+        snake.render('red', 'red');
       }
     });
     // collision with canvas border
     if(snake.head[0] > gameArea.canvas.width || snake.head[0] < 0 || snake.head[1] > gameArea.canvas.height || snake.head[1] < 0){
       clearInterval(gameArea.interval);
+      snake.render('red', 'red');
     }
   },
   move: function(){
