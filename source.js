@@ -1,10 +1,44 @@
 
+function startGame(){
+  document.addEventListener('keydown',  function(event){
+    snake.keyboardEvent = event;
+  });
+  gameArea.start();
+}
+
+function updateGameArea(){
+  gameArea.clear();
+  snake.changeDirection(snake.keyboardEvent);
+  snake.move();
+  snake.render();
+  snake.detectCollision();
+  // out of bounds:
+  if(snake.head[0] > gameArea.canvas.width || snake.head[0] < 0 | snake.head[1] > gameArea.canvas.height || snake.head[1] < 0){
+    clearInterval(gameArea.interval);
+  }
+}
+
+var gameArea = {
+  start: function(){
+    gameArea.canvas = document.getElementById('gameCanvas');
+    gameArea.canvas.width = 596;
+    gameArea.canvas.height = 596;
+    gameArea.ctx = gameArea.canvas.getContext('2d');
+    gameArea.interval = setInterval(updateGameArea, 125);
+  },
+  clear: function(){
+    gameArea.ctx.clearRect(0, 0, gameArea.canvas.width, gameArea.canvas.height);
+  }
+}
+
 var snake = {
-  length: 1,
-  bodyParts: [[297, 297], [290, 297], [283, 297], [276, 297], [269, 297]],
+  head: [1, 1],
+  bodyParts: [],
   direction: 'right',
   keyboardEvent: {code: 'ArrowRight'},
   render: function(){
+    gameArea.ctx.fillStyle = 'rgb(0, 180, 0)';
+    gameArea.ctx.fillRect(snake.head[0], snake.head[1], 6, 6);
     snake.bodyParts.forEach(function(coord){
       var x = coord[0];
       var y = coord[1];
@@ -24,65 +58,35 @@ var snake = {
     }
   },
   detectCollision: function(){
-    snake.bodyParts.slice(1, snake.bodyParts.length).forEach(function(coord){
-      if(snake.bodyParts[0].toString() === coord.toString()){
+    snake.bodyParts.forEach(function(bodyPart){
+      if(snake.head.toString() === bodyPart.toString()){
         clearInterval(gameArea.interval);
       }
     });
   },
   move: function(){
     if(snake.direction === 'right'){
-      snake.bodyParts.unshift(snake.bodyParts[0].slice());
-      snake.bodyParts[0] = [snake.bodyParts[0][0] + 7, snake.bodyParts[0][1]];
+      // copy the head to front of body
+      snake.bodyParts.unshift(snake.head.slice());
+      // move original head according to snake.direction
+      snake.head = [snake.head[0] + 7, snake.head[1]];
+      // remove last bodypart of snake
       snake.bodyParts.pop(snake.bodyParts[snake.bodyParts.length - 1]);
 
     } else if(snake.direction === 'left'){
-      snake.bodyParts.unshift(snake.bodyParts[0].slice());
-      snake.bodyParts[0] = [snake.bodyParts[0][0] - 7, snake.bodyParts[0][1]];
+      snake.bodyParts.unshift(snake.head.slice());
+      snake.head = [snake.head[0] - 7, snake.head[1]];
       snake.bodyParts.pop(snake.bodyParts[snake.bodyParts.length - 1]);
 
     } else if(snake.direction === 'up'){
-      snake.bodyParts.unshift(snake.bodyParts[0].slice());
-      snake.bodyParts[0] = [snake.bodyParts[0][0], snake.bodyParts[0][1] - 7];
+      snake.bodyParts.unshift(snake.head.slice());
+      snake.head = [snake.head[0], snake.head[1] - 7];
       snake.bodyParts.pop(snake.bodyParts[snake.bodyParts.length - 1]);
 
     } else if(snake.direction === 'down'){
-      snake.bodyParts.unshift(snake.bodyParts[0].slice());
-      snake.bodyParts[0] = [snake.bodyParts[0][0], snake.bodyParts[0][1] + 7];
+      snake.bodyParts.unshift(snake.head.slice());
+      snake.head = [snake.head[0], snake.head[1] + 7];
       snake.bodyParts.pop(snake.bodyParts[snake.bodyParts.length - 1]);
     }
   }
 };
-
-function startGame(){
-  document.addEventListener('keydown',  function(event){
-    snake.keyboardEvent = event;
-  });
-  gameArea.start();
-}
-
-var gameArea = {
-  start: function(){
-    gameArea.canvas = document.getElementById('gameCanvas');
-    gameArea.canvas.width = 600;
-    gameArea.canvas.height = 600;
-    gameArea.ctx = gameArea.canvas.getContext('2d');
-    gameArea.interval = setInterval(updateGameArea, 125);
-  },
-  clear: function(){
-    gameArea.ctx.clearRect(0, 0, gameArea.canvas.width, gameArea.canvas.height);
-  }
-}
-
-function updateGameArea(){
-  gameArea.clear();
-  snake.changeDirection(snake.keyboardEvent);
-  snake.move();
-  snake.render();
-  snake.detectCollision();
-
-  // out of bounds:
-  if(snake.bodyParts[0][0] > gameArea.canvas.width || snake.bodyParts[0][0] < 0 | snake.bodyParts[0][1] > gameArea.canvas.height || snake.bodyParts[0][1] < 0){
-    clearInterval(gameArea.interval);
-  }
-}
