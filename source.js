@@ -33,9 +33,9 @@ var gameArea = {
 
 var food = {
   location: [295, 295],
-  createFood: function(){
-    var randomX = Math.round(Math.random() * (gameArea.canvas.width - 1) / 7) * 7;
-    var randomY = Math.round(Math.random() * (gameArea.canvas.height - 1) / 7) * 7;
+  create: function(){
+    var randomX = Math.round(Math.random() * gameArea.canvas.width / 7) * 7 - 6;
+    var randomY = Math.round(Math.random() * gameArea.canvas.height / 7) * 7 - 6;
     food.location = [randomX, randomY];
   },
   render: function(){
@@ -82,6 +82,10 @@ var snake = {
     if(snake.head[0] > gameArea.canvas.width || snake.head[0] < 0 || snake.head[1] > gameArea.canvas.height || snake.head[1] < 0){
       clearInterval(gameArea.interval);
       snake.render('red', 'red');
+    }
+    // collision with food
+    if(snake.head.toString() === food.location.toString()){
+      food.create();
     }
   },
   moveHead: function(){
