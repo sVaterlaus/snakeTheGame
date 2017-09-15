@@ -11,6 +11,17 @@ var snake = {
       gameArea.ctx.fillRect(x, y, 6, 6);
     });
   },
+  changeDirection: function(event){
+    if(event.code === 'ArrowRight' || event.code === 'KeyD'){
+      snake.direction = 'right';
+    } else if(event.code === 'ArrowLeft' || event.code === 'KeyA'){
+      snake.direction = 'left';
+    } else if(event.code === 'ArrowUp' || event.code === 'KeyW'){
+      snake.direction = 'up';
+    } else if(event.code === 'ArrowDown' || event.code === 'KeyS'){
+      snake.direction = 'down';
+    }
+  },
   move: function(){
     if(this.direction === 'right'){
       this.bodyParts.unshift(this.bodyParts[0].slice());
@@ -36,13 +47,14 @@ var snake = {
 };
 
 function startGame(){
+  document.addEventListener('keydown',  snake.changeDirection);
   gameArea.start();
 }
 
 var gameArea = {
   start: function(){
     this.canvas = document.getElementById('gameCanvas');
-    this.canvas.width = 1200;
+    this.canvas.width = 600;
     this.canvas.height = 600;
     this.ctx = this.canvas.getContext('2d');
     this.interval = setInterval(updateGameArea, 125);
@@ -57,8 +69,8 @@ function updateGameArea(){
   snake.move();
   snake.render();
 
-  // temporary interval limit
-  if(snake.bodyParts[0][0] > 600){
+  // out of bounds:
+  if(snake.bodyParts[0][0] > gameArea.canvas.width || snake.bodyParts[0][0] < 0 | snake.bodyParts[0][1] > gameArea.canvas.height || snake.bodyParts[0][1] < 0){
     clearInterval(gameArea.interval);
   }
 }
