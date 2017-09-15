@@ -43,13 +43,13 @@ var snake = {
     });
   },
   changeDirection: function(event){
-    if((event.code === 'ArrowRight' || event.code === 'KeyD') && snake.direction !== 'left'){
+    if((event.code === 'ArrowRight' || event.code === 'KeyD') && (snake.direction !== 'left' || snake.bodyParts.length === 0)){
       snake.direction = 'right';
-    } else if((event.code === 'ArrowLeft' || event.code === 'KeyA') && snake.direction !== 'right'){
+    } else if((event.code === 'ArrowLeft' || event.code === 'KeyA') && (snake.direction !== 'right' || snake.bodyParts.length === 0)){
       snake.direction = 'left';
-    } else if((event.code === 'ArrowUp' || event.code === 'KeyW') && snake.direction !== 'down'){
+    } else if((event.code === 'ArrowUp' || event.code === 'KeyW') && (snake.direction !== 'down' || snake.bodyParts.length === 0)){
       snake.direction = 'up';
-    } else if((event.code === 'ArrowDown' || event.code === 'KeyS') && snake.direction !== 'up'){
+    } else if((event.code === 'ArrowDown' || event.code === 'KeyS') && (snake.direction !== 'up' || snake.bodyParts.length === 0)){
       snake.direction = 'down';
     }
   },
