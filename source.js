@@ -72,13 +72,10 @@ var snake = {
   moveHead: function(){
     if(snake.direction === 'right'){
       snake.head = [snake.head[0] + 7, snake.head[1]];
-
     } else if(snake.direction === 'left'){
       snake.head = [snake.head[0] - 7, snake.head[1]];
-
     } else if(snake.direction === 'up'){
       snake.head = [snake.head[0], snake.head[1] - 7];
-
     } else if(snake.direction === 'down'){
       snake.head = [snake.head[0], snake.head[1] + 7];
     }
@@ -88,5 +85,9 @@ var snake = {
   },
   removeBodyPart: function(){
     snake.bodyParts.pop(snake.bodyParts[snake.bodyParts.length - 1]);
+  },
+  extendBody: function(){
+    snake.addBodyPart();
+    snake.moveHead();
   }
 };
