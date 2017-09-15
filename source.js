@@ -12,10 +12,6 @@ function updateGameArea(){
   snake.move();
   snake.render();
   snake.detectCollision();
-  // out of bounds:
-  if(snake.head[0] > gameArea.canvas.width || snake.head[0] < 0 | snake.head[1] > gameArea.canvas.height || snake.head[1] < 0){
-    clearInterval(gameArea.interval);
-  }
 }
 
 var gameArea = {
@@ -58,11 +54,16 @@ var snake = {
     }
   },
   detectCollision: function(){
+    // collision with self
     snake.bodyParts.forEach(function(bodyPart){
       if(snake.head.toString() === bodyPart.toString()){
         clearInterval(gameArea.interval);
       }
     });
+    // collision with canvas border
+    if(snake.head[0] > gameArea.canvas.width || snake.head[0] < 0 || snake.head[1] > gameArea.canvas.height || snake.head[1] < 0){
+      clearInterval(gameArea.interval);
+    }
   },
   move: function(){
     if(snake.direction === 'right'){
