@@ -9,7 +9,9 @@ function startGame(){
 function updateGameArea(){
   gameArea.clear();
   snake.changeDirection(snake.keyboardEvent);
-  snake.move();
+  snake.addBodyPart();
+  snake.moveHead();
+  snake.removeBodyPart();
   snake.render('green', 'rgb(0, 180, 0)');
   snake.detectCollision();
 }
@@ -29,7 +31,7 @@ var gameArea = {
 
 var snake = {
   head: [1, 1],
-  bodyParts: [[1, 8], [1, 15], [1, 22], [1, 29], [1, 36]],
+  bodyParts: [[1, 8],[1, 15],[1, 22],[1, 29],[1, 36]],
   direction: 'right',
   keyboardEvent: {code: 'ArrowRight'},
   render: function(headColor, bodyColor){
@@ -67,29 +69,24 @@ var snake = {
       snake.render('red', 'red');
     }
   },
-  move: function(){
+  moveHead: function(){
     if(snake.direction === 'right'){
-      // copy the head to front of body
-      snake.bodyParts.unshift(snake.head.slice());
-      // move original head according to snake.direction
       snake.head = [snake.head[0] + 7, snake.head[1]];
-      // remove last bodypart of snake
-      snake.bodyParts.pop(snake.bodyParts[snake.bodyParts.length - 1]);
 
     } else if(snake.direction === 'left'){
-      snake.bodyParts.unshift(snake.head.slice());
       snake.head = [snake.head[0] - 7, snake.head[1]];
-      snake.bodyParts.pop(snake.bodyParts[snake.bodyParts.length - 1]);
 
     } else if(snake.direction === 'up'){
-      snake.bodyParts.unshift(snake.head.slice());
       snake.head = [snake.head[0], snake.head[1] - 7];
-      snake.bodyParts.pop(snake.bodyParts[snake.bodyParts.length - 1]);
 
     } else if(snake.direction === 'down'){
-      snake.bodyParts.unshift(snake.head.slice());
       snake.head = [snake.head[0], snake.head[1] + 7];
-      snake.bodyParts.pop(snake.bodyParts[snake.bodyParts.length - 1]);
     }
+  },
+  addBodyPart: function(){
+    snake.bodyParts.unshift(snake.head.slice());
+  },
+  removeBodyPart: function(){
+    snake.bodyParts.pop(snake.bodyParts[snake.bodyParts.length - 1]);
   }
 };
