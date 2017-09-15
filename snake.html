@@ -5,10 +5,17 @@
   <script src="source.js"></script>
 </script>
   <style>
-      canvas {border: 2px solid black;}
+      div {
+        display: block;
+        margin: auto;
+        width: 351px;
+      }
   </style>
 </head>
 <body onload="startGame();">
-  <canvas id="gameCanvas">Please use a newer browser</canvas>
+  <div>
+    <canvas id="gameCanvas">Please use a newer browser</canvas>
+    <p>SCORE: <span>0</span></p>
+  </div>
 </body>
 </html>
