@@ -11,13 +11,18 @@ function updateGameArea(){
   snake.changeDirection(snake.keyboardEvent);
   snake.addBodyPart();
   snake.moveHead();
-  snake.removeBodyPart();
+  if(snake.foodCollision === false){
+    snake.removeBodyPart();
+  }
+  snake.foodCollision = false;
   snake.render('lime', '#28af28');
   snake.detectCollision();
   food.render();
+  document.getElementById('score').innerHTML = gameArea.score;
 }
 
 var gameArea = {
+  score: 0,
   start: function(){
     gameArea.canvas = document.getElementById('gameCanvas');
     gameArea.canvas.width = 351;
@@ -43,6 +48,14 @@ var food = {
   render: function(){
     gameArea.ctx.fillStyle = 'gold';
     gameArea.ctx.fillRect(food.location[0], food.location[1], 6, 6);
+  },
+  preventFoodBodyPartCollision: function(){
+    snake.bodyParts.forEach(function(bodyPart){
+      if(food.location.toString() === bodyPart.toString()){
+        food.create();
+        preventFoodBodyPartCollision();
+      }
+    });
   }
 }
 
@@ -51,6 +64,7 @@ var snake = {
   bodyParts: [],
   direction: 'right',
   keyboardEvent: {code: 'ArrowRight'},
+  foodCollision: false,
   render: function(headColor, bodyColor){
     gameArea.ctx.fillStyle = headColor;
     gameArea.ctx.fillRect(snake.head[0], snake.head[1], 6, 6);
@@ -87,19 +101,11 @@ var snake = {
     }
     // collision with food
     if(snake.head.toString() === food.location.toString()){
+      snake.foodCollision = true;
       food.create();
-      snake.preventFoodBodyPartCollision();
-      snake.addBodyPart();
-      snake.moveHead();
+      food.preventFoodBodyPartCollision();
+      gameArea.score += 1;
     }
-  },
-  preventFoodBodyPartCollision: function(){
-    snake.bodyParts.forEach(function(bodyPart){
-      if(food.location.toString() === bodyPart.toString()){
-        food.create();
-        preventFoodBodyPartCollision();
-      }
-    });
   },
   moveHead: function(){
     if(snake.direction === 'right'){
