@@ -12,8 +12,9 @@ function updateGameArea(){
   snake.addBodyPart();
   snake.moveHead();
   snake.removeBodyPart();
-  snake.render('green', 'rgb(0, 180, 0)');
+  snake.render('lime', '#28af28');
   snake.detectCollision();
+  food.render();
 }
 
 var gameArea = {
@@ -25,7 +26,21 @@ var gameArea = {
     gameArea.interval = setInterval(updateGameArea, 125);
   },
   clear: function(){
-    gameArea.ctx.clearRect(0, 0, gameArea.canvas.width, gameArea.canvas.height);
+    gameArea.ctx.fillStyle = 'black';
+    gameArea.ctx.fillRect(0, 0, gameArea.canvas.width, gameArea.canvas.height);
+  }
+}
+
+var food = {
+  location: [295, 295],
+  createFood: function(){
+    var randomX = Math.round(Math.random() * (gameArea.canvas.width - 1) / 7) * 7;
+    var randomY = Math.round(Math.random() * (gameArea.canvas.height - 1) / 7) * 7;
+    food.location = [randomX, randomY];
+  },
+  render: function(){
+    gameArea.ctx.fillStyle = 'gold';
+    gameArea.ctx.fillRect(food.location[0], food.location[1], 6, 6);
   }
 }
 
