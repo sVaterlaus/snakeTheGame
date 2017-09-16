@@ -8,18 +8,20 @@ function startGame(){
 }
 
 function updateGameArea(){
-  gameArea.clear();
-  snake.changeDirection(snake.keyboardEvent);
-  snake.addBodyPart();
-  snake.moveHead();
-  if(snake.foodCollision === false){
-    snake.removeBodyPart();
+  if(snake.living){
+    gameArea.clear();
+    snake.changeDirection(snake.keyboardEvent);
+    snake.addBodyPart();
+    snake.moveHead();
+    if(snake.foodCollision === false){
+      snake.removeBodyPart();
+    }
+    snake.foodCollision = false;
+    snake.render('lime', '#28af28');
+    snake.detectCollision();
+    food.render();
+    document.getElementById('score').innerHTML = gameArea.score;
   }
-  snake.foodCollision = false;
-  snake.render('lime', '#28af28');
-  snake.detectCollision();
-  food.render();
-  document.getElementById('score').innerHTML = gameArea.score;
 }
 
 var gameArea = {
@@ -37,12 +39,12 @@ var gameArea = {
     gameArea.ctx.fillRect(0, 0, gameArea.canvas.width, gameArea.canvas.height);
   },
   pauseAndResume: function(keyPressed){
-    if(keyPressed.code === 'Space'){
+    if(keyPressed.code === 'Space' && snake.living){
       if(gameArea.paused === false){
         clearInterval(gameArea.interval);
         gameArea.ctx.fillStyle = 'white';
         gameArea.ctx.font = "64px Arial Black";
-        gameArea.ctx.fillText('Paused', 223, 80);
+        gameArea.ctx.fillText('Paused', 173, 80);
         gameArea.paused = true;
       } else{
         gameArea.interval = setInterval(updateGameArea, 100);
@@ -76,6 +78,7 @@ var food = {
 }
 
 var snake = {
+  living: true,
   head: [2, 296],
   bodyParts: [],
   direction: 'right',
@@ -108,12 +111,14 @@ var snake = {
       if(snake.head.toString() === bodyPart.toString()){
         clearInterval(gameArea.interval);
         snake.render('red', 'red');
+        snake.living = false;
       }
     });
     // collision with canvas border
     if(snake.head[0] > gameArea.canvas.width - 1 || snake.head[0] < 0 || snake.head[1] > gameArea.canvas.height - 1 || snake.head[1] < 0){
       clearInterval(gameArea.interval);
       snake.render('red', 'red');
+      snake.living = false;
     }
     // collision with food
     if(snake.head.toString() === food.location.toString()){
