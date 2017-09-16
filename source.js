@@ -27,8 +27,8 @@ var gameArea = {
   paused: false,
   start: function(){
     gameArea.canvas = document.getElementById('gameCanvas');
-    gameArea.canvas.width = 351;
-    gameArea.canvas.height = 351;
+    gameArea.canvas.width = 702;
+    gameArea.canvas.height = 702;
     gameArea.ctx = gameArea.canvas.getContext('2d');
     gameArea.interval = setInterval(updateGameArea, 100);
   },
@@ -50,17 +50,17 @@ var gameArea = {
 }
 
 var food = {
-  location: [176, 176],
+  location: [338, 338],
   create: function(){
-    var randomX = Math.round(Math.random() * gameArea.canvas.width / 7) * 7 - 6;
-    var randomY = Math.round(Math.random() * gameArea.canvas.height / 7) * 7 - 6;
+    var randomX = Math.round(Math.random() * gameArea.canvas.width / 14) * 14 - 12;
+    var randomY = Math.round(Math.random() * gameArea.canvas.height / 14) * 14 - 12;
     if(randomX < 1){randomX = 1;}
     if(randomY < 1){randomY = 1;}
     food.location = [randomX, randomY];
   },
   render: function(){
     gameArea.ctx.fillStyle = 'gold';
-    gameArea.ctx.fillRect(food.location[0], food.location[1], 6, 6);
+    gameArea.ctx.fillRect(food.location[0], food.location[1], 12, 12);
   },
   preventFoodBodyPartCollision: function(){
     snake.bodyParts.forEach(function(bodyPart){
@@ -73,19 +73,19 @@ var food = {
 }
 
 var snake = {
-  head: [1, 1],
+  head: [2, 338],
   bodyParts: [],
   direction: 'right',
   keyboardEvent: {code: 'ArrowRight'},
   foodCollision: false,
   render: function(headColor, bodyColor){
     gameArea.ctx.fillStyle = headColor;
-    gameArea.ctx.fillRect(snake.head[0], snake.head[1], 6, 6);
+    gameArea.ctx.fillRect(snake.head[0], snake.head[1], 12, 12);
     snake.bodyParts.forEach(function(coord){
       var x = coord[0];
       var y = coord[1];
       gameArea.ctx.fillStyle = bodyColor;
-      gameArea.ctx.fillRect(x, y, 6, 6);
+      gameArea.ctx.fillRect(x, y, 12, 12);
     });
   },
   changeDirection: function(keyPressed){
@@ -122,13 +122,13 @@ var snake = {
   },
   moveHead: function(){
     if(snake.direction === 'right'){
-      snake.head = [snake.head[0] + 7, snake.head[1]];
+      snake.head = [snake.head[0] + 14, snake.head[1]];
     } else if(snake.direction === 'left'){
-      snake.head = [snake.head[0] - 7, snake.head[1]];
+      snake.head = [snake.head[0] - 14, snake.head[1]];
     } else if(snake.direction === 'up'){
-      snake.head = [snake.head[0], snake.head[1] - 7];
+      snake.head = [snake.head[0], snake.head[1] - 14];
     } else if(snake.direction === 'down'){
-      snake.head = [snake.head[0], snake.head[1] + 7];
+      snake.head = [snake.head[0], snake.head[1] + 14];
     }
   },
   addBodyPart: function(){
