@@ -5,23 +5,60 @@
   <script src="source.js"></script>
 </script>
   <style>
-      div {
+      #block {
         display: block;
         margin: auto;
         width: 602px;
       }
+      #left {
+        width: 132px;
+        float: left;
+      }
+      #middle {
+        margin-top: 25px;
+        float: left;
+      }
+      #right {
+        width: 100px;
+        float: right;
+      }
       p {
         font-family: Arial, sans-serif;
       }
-      #score {
+      .black {
         font-family: Arial Black, sans-serif;
+      }
+      .italic {
+        font-style: italic;
+      }
+      .tiny {
+        font-size: 11px;
       }
   </style>
 </head>
 <body onload="startGame();">
-  <div>
+  <div id="block">
     <canvas id="gameCanvas">Please use a newer browser</canvas>
-    <p>SCORE: <span id="score">0</span></p>
+    <div id="left">
+      <p>
+        <span class="black">Controls: </span><br>
+        movement &#x25B8;<br>
+        pause/resume &#x25B8;<br>
+        reset &#x25B8;
+      </p>
+    </div>
+    <div id="middle">
+      <p>
+        WASD <span class="tiny">or</span> &uarr;&larr;&darr;&rarr;<br>
+        Spacebar<br>
+        <span class="italic">(reload page)</span>
+      </p>
+    </div>
+    <div id="right">
+      <p>
+        SCORE: <span class="black" id="score">0</span>
+      </p>
+    </div>
   </div>
 </body>
 </html>

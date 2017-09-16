@@ -39,8 +39,9 @@ var gameArea = {
     gameArea.ctx.fillRect(0, 0, gameArea.canvas.width, gameArea.canvas.height);
   },
   pauseAndResume: function(keyPressed){
-    if(keyPressed.code === 'Space' && snake.living){
-      if(gameArea.paused === false){
+    if(keyPressed.code === 'Space'){
+      keyPressed.preventDefault();
+      if(gameArea.paused === false && snake.living){
         clearInterval(gameArea.interval);
         gameArea.ctx.fillStyle = 'white';
         gameArea.ctx.font = "64px Arial Black";
