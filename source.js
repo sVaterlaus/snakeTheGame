@@ -40,6 +40,9 @@ var gameArea = {
     if(keyPressed.code === 'Space'){
       if(gameArea.paused === false){
         clearInterval(gameArea.interval);
+        gameArea.ctx.fillStyle = 'white';
+        gameArea.ctx.font = "64px Arial Black";
+        gameArea.ctx.fillText('Paused', 223, 80);
         gameArea.paused = true;
       } else{
         gameArea.interval = setInterval(updateGameArea, 100);
