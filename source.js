@@ -27,8 +27,8 @@ var gameArea = {
   paused: false,
   start: function(){
     gameArea.canvas = document.getElementById('gameCanvas');
-    gameArea.canvas.width = 702;
-    gameArea.canvas.height = 702;
+    gameArea.canvas.width = 604;
+    gameArea.canvas.height = 604;
     gameArea.ctx = gameArea.canvas.getContext('2d');
     gameArea.interval = setInterval(updateGameArea, 100);
   },
@@ -53,12 +53,12 @@ var gameArea = {
 }
 
 var food = {
-  location: [338, 338],
+  location: [296, 296],
   create: function(){
     var randomX = Math.round(Math.random() * gameArea.canvas.width / 14) * 14 - 12;
     var randomY = Math.round(Math.random() * gameArea.canvas.height / 14) * 14 - 12;
-    if(randomX < 1){randomX = 1;}
-    if(randomY < 1){randomY = 1;}
+    if(randomX < 2){randomX = 2;}
+    if(randomY < 2){randomY = 2;}
     food.location = [randomX, randomY];
   },
   render: function(){
@@ -76,7 +76,7 @@ var food = {
 }
 
 var snake = {
-  head: [2, 338],
+  head: [2, 296],
   bodyParts: [],
   direction: 'right',
   keyboardEvent: {code: 'ArrowRight'},
