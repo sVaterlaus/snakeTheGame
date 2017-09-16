@@ -1,8 +1,9 @@
 
 function startGame(){
-  document.addEventListener('keydown',  function(event){
-    snake.keyboardEvent = event;
+  document.addEventListener('keydown',  function(keyPressed){
+    snake.keyboardEvent = keyPressed;
   });
+  document.addEventListener('keydown', gameArea.pauseAndResume);
   gameArea.start();
 }
 
@@ -23,16 +24,28 @@ function updateGameArea(){
 
 var gameArea = {
   score: 0,
+  paused: false,
   start: function(){
     gameArea.canvas = document.getElementById('gameCanvas');
     gameArea.canvas.width = 351;
     gameArea.canvas.height = 351;
     gameArea.ctx = gameArea.canvas.getContext('2d');
-    gameArea.interval = setInterval(updateGameArea, 125);
+    gameArea.interval = setInterval(updateGameArea, 100);
   },
   clear: function(){
     gameArea.ctx.fillStyle = 'black';
     gameArea.ctx.fillRect(0, 0, gameArea.canvas.width, gameArea.canvas.height);
+  },
+  pauseAndResume: function(keyPressed){
+    if(keyPressed.code === 'Space'){
+      if(gameArea.paused === false){
+        clearInterval(gameArea.interval);
+        gameArea.paused = true;
+      } else{
+        gameArea.interval = setInterval(updateGameArea, 100);
+        gameArea.paused = false;
+      }
+    }
   }
 }
 
@@ -75,14 +88,14 @@ var snake = {
       gameArea.ctx.fillRect(x, y, 6, 6);
     });
   },
-  changeDirection: function(event){
-    if((event.code === 'ArrowRight' || event.code === 'KeyD') && (snake.direction !== 'left' || snake.bodyParts.length === 0)){
+  changeDirection: function(keyPressed){
+    if((keyPressed.code === 'ArrowRight' || keyPressed.code === 'KeyD') && (snake.direction !== 'left' || snake.bodyParts.length === 0)){
       snake.direction = 'right';
-    } else if((event.code === 'ArrowLeft' || event.code === 'KeyA') && (snake.direction !== 'right' || snake.bodyParts.length === 0)){
+    } else if((keyPressed.code === 'ArrowLeft' || keyPressed.code === 'KeyA') && (snake.direction !== 'right' || snake.bodyParts.length === 0)){
       snake.direction = 'left';
-    } else if((event.code === 'ArrowUp' || event.code === 'KeyW') && (snake.direction !== 'down' || snake.bodyParts.length === 0)){
+    } else if((keyPressed.code === 'ArrowUp' || keyPressed.code === 'KeyW') && (snake.direction !== 'down' || snake.bodyParts.length === 0)){
       snake.direction = 'up';
-    } else if((event.code === 'ArrowDown' || event.code === 'KeyS') && (snake.direction !== 'up' || snake.bodyParts.length === 0)){
+    } else if((keyPressed.code === 'ArrowDown' || keyPressed.code === 'KeyS') && (snake.direction !== 'up' || snake.bodyParts.length === 0)){
       snake.direction = 'down';
     }
   },
