@@ -1,9 +1,15 @@
 
 function startGame(){
-  document.addEventListener('keydown',  function(keyPressed){
+  document.addEventListener('keydown', function(keyPressed){
     snake.keyboardEvent = keyPressed;
   });
   document.addEventListener('keydown', gameArea.pauseAndResume);
+  document.addEventListener('keydown', function(key){
+      if(key.code === 'ArrowUp' || key.code === 'ArrowDown' || key.code === 'Space'){
+        console.log('key pressed');
+        key.preventDefault();
+      }
+    });
   gameArea.start();
 }
 
@@ -40,7 +46,6 @@ var gameArea = {
   },
   pauseAndResume: function(keyPressed){
     if(keyPressed.code === 'Space'){
-      keyPressed.preventDefault();
       if(gameArea.paused === false && snake.living){
         clearInterval(gameArea.interval);
         gameArea.ctx.fillStyle = 'white';
