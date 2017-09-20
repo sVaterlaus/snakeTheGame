@@ -62,9 +62,8 @@ var gameArea = {
 var food = {
   coordinates: [[294, 294]],
   create: function(){
-    var randomX = Math.round(Math.random() * gameArea.canvas.width / 14) * 14 - 14;
-    var randomY = Math.round(Math.random() * gameArea.canvas.height / 14) * 14 - 14;
-    food.coordinates = [[randomX, randomY]];
+    var randomCoord = Math.round(Math.random() * (gameArea.canvas.width - 14) / 14) * 14;
+    food.coordinates = [[randomCoord, randomCoord]];
   },
   render: function(){
     gameArea.ctx.fillStyle = 'gold';
@@ -83,9 +82,8 @@ var food = {
 function Thing(){
   this.coordinates = [];
   this.create = function(){
-    var randomX = Math.round(Math.random() * gameArea.canvas.width / 14) * 14 - 12;
-    var randomY = Math.round(Math.random() * gameArea.canvas.height / 14) * 14 - 12;
-    this.coordinates.unshift([randomX, randomY]);
+    var randomCoord = Math.round(Math.random() * (gameArea.canvas.width - 14) / 14) * 14;
+    this.coordinates.unshift([randomCoord, randomCoord]);
   }
   this.render = function(color){
     this.coordinates.forEach(coord => {
