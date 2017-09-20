@@ -6,7 +6,6 @@ function startGame(){
   document.addEventListener('keydown', gameArea.pauseAndResume);
   document.addEventListener('keydown', function(key){
       if(key.code === 'ArrowUp' || key.code === 'ArrowDown' || key.code === 'Space'){
-        console.log('key pressed');
         key.preventDefault();
       }
     });
@@ -35,8 +34,8 @@ var gameArea = {
   paused: false,
   start: function(){
     gameArea.canvas = document.getElementById('gameCanvas');
-    gameArea.canvas.width = 604;
-    gameArea.canvas.height = 604;
+    gameArea.canvas.width = 602;
+    gameArea.canvas.height = 602;
     gameArea.ctx = gameArea.canvas.getContext('2d');
     gameArea.interval = setInterval(updateGameArea, 100);
   },
@@ -50,7 +49,7 @@ var gameArea = {
         clearInterval(gameArea.interval);
         gameArea.ctx.fillStyle = 'white';
         gameArea.ctx.font = "64px Arial Black";
-        gameArea.ctx.fillText('Paused', 173, 80);
+        gameArea.ctx.fillText('Paused', 171, 78);
         gameArea.paused = true;
       } else{
         gameArea.interval = setInterval(updateGameArea, 100);
@@ -61,43 +60,54 @@ var gameArea = {
 }
 
 var food = {
-  location: [296, 296],
+  coordinates: [[294, 294]],
   create: function(){
-    var randomX = Math.round(Math.random() * gameArea.canvas.width / 14) * 14 - 12;
-    var randomY = Math.round(Math.random() * gameArea.canvas.height / 14) * 14 - 12;
-    if(randomX < 2){randomX = 2;}
-    if(randomY < 2){randomY = 2;}
-    food.location = [randomX, randomY];
+    var randomX = Math.round(Math.random() * gameArea.canvas.width / 14) * 14 - 14;
+    var randomY = Math.round(Math.random() * gameArea.canvas.height / 14) * 14 - 14;
+    food.coordinates = [[randomX, randomY]];
   },
   render: function(){
     gameArea.ctx.fillStyle = 'gold';
-    gameArea.ctx.fillRect(food.location[0], food.location[1], 12, 12);
+    gameArea.ctx.fillRect(food.coordinates[0][0] + 1, food.coordinates[0][1] + 1, 12, 12);
   },
   preventFoodBodyPartCollision: function(){
-    snake.bodyParts.forEach(function(bodyPart){
-      if(food.location.toString() === bodyPart.toString()){
+    snake.bodyParts.forEach(bodyPart => {
+      if(food.coordinates[0].toString() === bodyPart.toString() || food.coordinates[0].toString() === snake.head.toString()){
         food.create();
-        preventFoodBodyPartCollision();
+        food.preventFoodBodyPartCollision();
       }
+    });
+  }
+}
+
+function Thing(){
+  this.coordinates = [];
+  this.create = function(){
+    var randomX = Math.round(Math.random() * gameArea.canvas.width / 14) * 14 - 12;
+    var randomY = Math.round(Math.random() * gameArea.canvas.height / 14) * 14 - 12;
+    this.coordinates.unshift([randomX, randomY]);
+  }
+  this.render = function(color){
+    this.coordinates.forEach(coord => {
+      gameArea.ctx.fillStyle = color;
+      gameArea.ctx.fillRect(coord[0], coord[1], 12, 12);
     });
   }
 }
 
 var snake = {
   living: true,
-  head: [2, 296],
+  head: [0, 294],
   bodyParts: [],
   direction: 'right',
   keyboardEvent: {code: 'ArrowRight'},
   foodCollision: false,
   render: function(headColor, bodyColor){
     gameArea.ctx.fillStyle = headColor;
-    gameArea.ctx.fillRect(snake.head[0], snake.head[1], 12, 12);
-    snake.bodyParts.forEach(function(coord){
-      var x = coord[0];
-      var y = coord[1];
+    gameArea.ctx.fillRect(snake.head[0] + 1, snake.head[1] + 1, 12, 12);
+    snake.bodyParts.forEach(coord => {
       gameArea.ctx.fillStyle = bodyColor;
-      gameArea.ctx.fillRect(x, y, 12, 12);
+      gameArea.ctx.fillRect(coord[0] + 1, coord[1] + 1, 12, 12);
     });
   },
   changeDirection: function(keyPressed){
@@ -113,7 +123,7 @@ var snake = {
   },
   detectCollision: function(){
     // collision with self
-    snake.bodyParts.forEach(function(bodyPart){
+    snake.bodyParts.forEach(bodyPart => {
       if(snake.head.toString() === bodyPart.toString()){
         clearInterval(gameArea.interval);
         snake.render('red', 'red');
@@ -127,7 +137,7 @@ var snake = {
       snake.living = false;
     }
     // collision with food
-    if(snake.head.toString() === food.location.toString()){
+    if(snake.head.toString() === food.coordinates.toString()){
       snake.foodCollision = true;
       food.create();
       food.preventFoodBodyPartCollision();
