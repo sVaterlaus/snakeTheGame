@@ -1,21 +1,17 @@
 
 function startGame(){
-  document.addEventListener('keydown', function(keyPressed){
-    snake.keyboardEvent = keyPressed;
+  document.addEventListener('keydown', function(keyPress){
+    gameArea.keyboardEvent = keyPress;
+    gameArea.preventDefault();
+    gameArea.pauseOrResume();
   });
-  document.addEventListener('keydown', gameArea.pauseAndResume);
-  document.addEventListener('keydown', function(key){
-      if(key.code === 'ArrowUp' || key.code === 'ArrowDown' || key.code === 'Space'){
-        key.preventDefault();
-      }
-    });
   gameArea.start();
 }
 
 function updateGameArea(){
   if(snake.living){
     gameArea.clear();
-    snake.changeDirection(snake.keyboardEvent);
+    snake.changeDirection();
     snake.addBodyPart();
     snake.moveHead();
     if(snake.foodCollision === false){
@@ -25,13 +21,15 @@ function updateGameArea(){
     snake.render('lime', '#28af28');
     snake.detectCollision();
     food.render();
+    // poison.render();
     document.getElementById('score').innerHTML = gameArea.score;
   }
 }
 
 var gameArea = {
   score: 0,
-  paused: false,
+  paused: false, //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< SHOULD BEGIN "PAUSED" ON PAGE REFRESH.
+  keyboardEvent: {code: 'ArrowRight'},
   start: function(){
     gameArea.canvas = document.getElementById('gameCanvas');
     gameArea.canvas.width = 602;
@@ -40,12 +38,18 @@ var gameArea = {
     gameArea.interval = setInterval(updateGameArea, 100);
   },
   clear: function(){
-    gameArea.ctx.fillStyle = 'black';
+    gameArea.ctx.fillStyle = 'black'; // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< NECESSARY LINE?
     gameArea.ctx.fillRect(0, 0, gameArea.canvas.width, gameArea.canvas.height);
   },
-  pauseAndResume: function(keyPressed){
-    if(keyPressed.code === 'Space'){
-      if(gameArea.paused === false && snake.living){
+  preventDefault: function(){
+    let k = gameArea.keyboardEvent.code;
+    if(k === 'ArrowUp' || k === 'ArrowDown' || k === 'Space'){
+      gameArea.keyboardEvent.preventDefault();
+    }
+  },
+  pauseOrResume: function(){
+    if(gameArea.keyboardEvent.code === 'Space'){
+      if(!gameArea.paused && snake.living){
         clearInterval(gameArea.interval);
         gameArea.ctx.fillStyle = 'white';
         gameArea.ctx.font = "64px Arial Black";
@@ -62,8 +66,9 @@ var gameArea = {
 var food = {
   coordinates: [[294, 294]],
   create: function(){
-    var randomCoord = Math.round(Math.random() * (gameArea.canvas.width - 14) / 14) * 14;
-    food.coordinates = [[randomCoord, randomCoord]];
+    var randomX = Math.round(Math.random() * (gameArea.canvas.width - 14) / 14) * 14;
+    var randomY = Math.round(Math.random() * (gameArea.canvas.width - 14) / 14) * 14;
+    food.coordinates = [[randomX, randomY]];
   },
   render: function(){
     gameArea.ctx.fillStyle = 'gold';
@@ -79,19 +84,28 @@ var food = {
   }
 }
 
-function Thing(){
-  this.coordinates = [];
-  this.create = function(){
-    var randomCoord = Math.round(Math.random() * (gameArea.canvas.width - 14) / 14) * 14;
-    this.coordinates.unshift([randomCoord, randomCoord]);
-  }
-  this.render = function(color){
-    this.coordinates.forEach(coord => {
-      gameArea.ctx.fillStyle = color;
-      gameArea.ctx.fillRect(coord[0], coord[1], 12, 12);
-    });
-  }
-}
+// var poison = {
+//   coordinates: [],
+//   create: function(){
+//     var randomCoord = Math.round(Math.random() * (gameArea.canvas.width - 14) / 14) * 14;
+//     poison.coordinates.unshift([randomCoord, randomCoord]);
+//   },
+//   render: function(){
+//     poison.coordinates.forEach(coord => {
+//       gameArea.ctx.fillStyle = 'red';
+//       gameArea.ctx.fillRect(coord[0] + 1, coord[1] + 1, 12, 12);
+//     })
+    
+//   },
+//   preventPoisonBodyPartCollision: function(){
+//     snake.bodyParts.forEach(bodyPart => {
+//       if(poison.coordinates[0].toString() === bodyPart.toString() || poison.coordinates[0].toString() === snake.head.toString()){
+//         poison.create();
+//         poison.preventPoisonBodyPartCollision();
+//       }
+//     });
+//   }
+// }
 
 var snake = {
   living: true,
@@ -108,14 +122,15 @@ var snake = {
       gameArea.ctx.fillRect(coord[0] + 1, coord[1] + 1, 12, 12);
     });
   },
-  changeDirection: function(keyPressed){
-    if((keyPressed.code === 'ArrowRight' || keyPressed.code === 'KeyD') && (snake.direction !== 'left' || snake.bodyParts.length === 0)){
+  changeDirection: function(){
+    let k = gameArea.keyboardEvent.code;
+    if((k === 'ArrowRight' || k === 'KeyD') && (snake.direction !== 'left' || snake.bodyParts.length === 0)){
       snake.direction = 'right';
-    } else if((keyPressed.code === 'ArrowLeft' || keyPressed.code === 'KeyA') && (snake.direction !== 'right' || snake.bodyParts.length === 0)){
+    } else if((k === 'ArrowLeft' || k === 'KeyA') && (snake.direction !== 'right' || snake.bodyParts.length === 0)){
       snake.direction = 'left';
-    } else if((keyPressed.code === 'ArrowUp' || keyPressed.code === 'KeyW') && (snake.direction !== 'down' || snake.bodyParts.length === 0)){
+    } else if((k === 'ArrowUp' || k === 'KeyW') && (snake.direction !== 'down' || snake.bodyParts.length === 0)){
       snake.direction = 'up';
-    } else if((keyPressed.code === 'ArrowDown' || keyPressed.code === 'KeyS') && (snake.direction !== 'up' || snake.bodyParts.length === 0)){
+    } else if((k === 'ArrowDown' || k === 'KeyS') && (snake.direction !== 'up' || snake.bodyParts.length === 0)){
       snake.direction = 'down';
     }
   },
@@ -138,9 +153,19 @@ var snake = {
     if(snake.head.toString() === food.coordinates.toString()){
       snake.foodCollision = true;
       food.create();
+      // poison.create();
       food.preventFoodBodyPartCollision();
+      // poison.preventPoisonBodyPartCollision();
       gameArea.score += 1;
     }
+      // collision with poison
+    // poison.coordinates.forEach(coord => {
+    //   if(snake.head.toString() === coord.toString()){
+    //     clearInterval(gameArea.interval);
+    //     snake.render('red', 'red');
+    //     snake.living = false;
+    //   }
+    // })
   },
   moveHead: function(){
     if(snake.direction === 'right'){
