@@ -21,7 +21,7 @@ function nextFrame(){
     snake.render('lime', '#28af28');
     snake.detectCollision();
     food.render();
-    // poison.render();
+    poison.render();
     document.getElementById('score').innerHTML = gameArea.score;
   }
 }
@@ -39,7 +39,6 @@ function preventSpawnOverlap(newSpawn){
       overlapCheck();
     }
   })();
-  console.log(allGameCoords); // TEST <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 }
 
 let gameArea = {
@@ -89,39 +88,23 @@ let food = {
   render: function(){
     gameArea.ctx.fillStyle = 'gold';
     gameArea.ctx.fillRect(food.coords[0][0] + 1, food.coords[0][1] + 1, 12, 12);
-  },
-  preventFoodBodyPartCollision: function(){
-    snake.bodyParts.forEach(bodyPart => {
-      if(food.coords[0].toString() === bodyPart.toString() || food.coords[0].toString() === snake.head.toString()){
-        food.create();
-        food.preventFoodBodyPartCollision();
-      }
-    });
   }
 }
 
-// let poison = {
-//   coords: [],
-//   create: function(){
-//     let randomCoord = Math.round(Math.random() * (gameArea.canvas.width - 14) / 14) * 14;
-//     poison.coords.unshift([randomCoord, randomCoord]);
-//   },
-//   render: function(){
-//     poison.coords.forEach(coord => {
-//       gameArea.ctx.fillStyle = 'red';
-//       gameArea.ctx.fillRect(coord[0] + 1, coord[1] + 1, 12, 12);
-//     })
-    
-//   },
-//   preventPoisonBodyPartCollision: function(){
-//     snake.bodyParts.forEach(bodyPart => {
-//       if(poison.coords[0].toString() === bodyPart.toString() || poison.coords[0].toString() === snake.head.toString()){
-//         poison.create();
-//         poison.preventPoisonBodyPartCollision();
-//       }
-//     });
-//   }
-// }
+let poison = {
+  coords: [],
+  create: function(){
+    let randomX = Math.round(Math.random() * (gameArea.canvas.width - 14) / 14) * 14;
+    let randomY = Math.round(Math.random() * (gameArea.canvas.width - 14) / 14) * 14;
+    poison.coords.unshift([randomX, randomY]);
+  },
+  render: function(){
+    poison.coords.forEach(coord => {
+      gameArea.ctx.fillStyle = 'red';
+      gameArea.ctx.fillRect(coord[0] + 1, coord[1] + 1, 12, 12);
+    });
+  }
+}
 
 let snake = {
   living: true,
@@ -130,9 +113,6 @@ let snake = {
   direction: 'right',
   keyboardEvent: {code: 'ArrowRight'},
   foodCollision: false,
-  // kill: function(){
-
-  // },
   render: function(headColor, bodyColor){
     gameArea.ctx.fillStyle = headColor;
     gameArea.ctx.fillRect(snake.head[0] + 1, snake.head[1] + 1, 12, 12);
@@ -171,20 +151,18 @@ let snake = {
     // collision with food
     if(snake.head.toString() === food.coords.toString()){
       snake.foodCollision = true;
-      food.create();
-      // poison.create();
-      preventSpawnOverlap(food); // TEST <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-      // poison.preventPoisonBodyPartCollision();
+      preventSpawnOverlap(poison, food);
+      preventSpawnOverlap(food, poison);
       gameArea.score += 1;
     }
-      // collision with poison
-    // poison.coords.forEach(coord => {
-    //   if(snake.head.toString() === coord.toString()){
-    //     clearInterval(gameArea.interval);
-    //     snake.render('red', 'red');
-    //     snake.living = false;
-    //   }
-    // })
+    // collision with poison
+    poison.coords.forEach(coord => {
+      if(snake.head.toString() === coord.toString()){
+        clearInterval(gameArea.interval);
+        snake.render('red', 'red');
+        snake.living = false;
+      }
+    })
   },
   moveHead: function(){
     if(snake.direction === 'right'){
