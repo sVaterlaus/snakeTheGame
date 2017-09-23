@@ -36,6 +36,8 @@ function preventSpawnOverlap(newSpawn){
   (function overlapCheck(){
     newSpawn.create();
     if(allGameCoords.includes(newSpawn.coords[0].toString())){
+      newSpawn.coords.shift();
+      console.log("preventSpawnOverlap");
       overlapCheck();
     }
   })();
@@ -83,7 +85,8 @@ let food = {
   create: function(){
     let randomX = Math.round(Math.random() * (gameArea.canvas.width - 14) / 14) * 14;
     let randomY = Math.round(Math.random() * (gameArea.canvas.width - 14) / 14) * 14;
-    food.coords = [[randomX, randomY]];
+    food.coords.shift(randomX, randomY);
+    food.coords.unshift([randomX, randomY]);
   },
   render: function(){
     gameArea.ctx.fillStyle = 'gold';
